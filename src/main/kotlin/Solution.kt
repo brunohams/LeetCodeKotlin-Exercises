@@ -1,4 +1,5 @@
 import java.lang.Exception
+import java.lang.IndexOutOfBoundsException
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -24,7 +25,7 @@ class Solution {
     fun romanToInt(s: String): Int {
         var counter = 0
 
-        val map = mapOf(
+        val valueMap = mapOf(
             'I' to 1,
             'V' to 5,
             'X' to 10,
@@ -34,49 +35,46 @@ class Solution {
             'M' to 1000
         )
 
-        if (s.length == 1) {
-            return map[s[0]]!!
-        }
+        for (index in s.indices) {
+            val currentChar = s.getOrNull(index) ?: throw IndexOutOfBoundsException("index: $index out of range")
+            val nextChar = s.getOrNull(index+1)
 
-        for (index in 1 until s.length step 2) {
-            val previous: Int = map[s[index-1]]!!
-            val actual: Int = map[s[index]]!!
-
-            counter += if (previous == 1 && actual in listOf(5,10)) {
-                actual - previous
-            } else if (previous == 10 && actual in listOf(50,100)) {
-                actual - previous
-            } else if (previous == 100 && actual in listOf(500,1000)) {
-                actual - previous
-            } else {
-                actual + previous
+            if (nextChar != null) {
+                // Should decrement
+                if (valueMap[currentChar]!! < valueMap[nextChar]!!) {
+                    counter -= valueMap[currentChar]!!
+                    continue
+                }
             }
+
+            counter += valueMap[currentChar]!!
         }
 
         return counter
     }
+
+    fun longestCommonPrefix(strs: Array<String>): String {
+        var result: String = strs.firstOrNull() ?: ""
+
+        for (stringIndex in 1 until strs.size) {
+            var updatedValue = ""
+            for (charIndex in strs[stringIndex].indices) {
+                if (result.getOrNull(charIndex) != strs[stringIndex].getOrNull(charIndex)) {
+                    break
+                }
+                updatedValue += strs[stringIndex][charIndex]
+            }
+            result = updatedValue
+        }
+
+        return result
+    }
 }
-//
-// I -> 1
-// II -> 2
-// III -> 3
-// IV -> 4
-// V -> 5
-// VI -> 6
-// IX -> 9
-// X -> 10
 
-// XXIV
-// XIV
-// IV
-// VII
-
-//
-
-//    'I'
-//   /   \
-//  'V'  'X'
-//      /   \
-//     'C   'L'
-//     / \
-//   'D' 'M'
+// ["flower","flow","flight"]
+//     ^
+//  flower
+//              ^
+//              fl
+//                       ˆ
+//                       fl

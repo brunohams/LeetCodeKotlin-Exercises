@@ -38,12 +38,11 @@ class RomanToIntTest {
             "LXI" to 61,
             "LXXIV" to 74,
             "LXXX" to 80,
-            "LIV" to 90,
+            "LXL" to 90,
             "C" to 100
         )
         mapAnswers.forEach { (roman, number) ->
             assertEquals(number, solution.romanToInt(roman))
         }
     }
-
 }
