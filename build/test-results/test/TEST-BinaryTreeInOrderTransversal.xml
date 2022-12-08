@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="BinaryTreeInOrderTransversal" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-08T01:44:07" hostname="Brunos-MacBook-Pro.local" time="145.026">
+  <properties/>
+  <testcase name="test_Example1()" classname="BinaryTreeInOrderTransversal" time="145.026"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,3 +1,4 @@
+import struct.TreeNode
 import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
 import kotlin.math.ceil
@@ -69,12 +70,21 @@ class Solution {
 
         return result
     }
+
+    val inorderTraversalResult = mutableListOf<Int>()
+
+    fun inorderTraversal(root: TreeNode?): List<Int> {
+        if (root == null) return emptyList()
+        inorderTraversal(root.left)
+        inorderTraversalResult.add(root.`val`)
+        inorderTraversal(root.right)
+        return inorderTraversalResult
+    }
 }
 
-// ["flower","flow","flight"]
-//     ^
-//  flower
-//              ^
-//              fl
-//                       ˆ
-//                       fl
+// Left until null -> OK
+// Root -> OK (required)
+// Right -> OK
+
+
+
