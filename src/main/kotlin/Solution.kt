@@ -125,8 +125,298 @@ class Solution {
 
         return palindrome
     }
-}
 
+    var fibonacciResult = hashMapOf<Int, Long>()
+    fun fibonacciWithMemoization(pos: Int): Long {
+        if (pos <= 2) return 1
+        if (fibonacciResult.containsKey(pos)) return fibonacciResult[pos]!!
+        val result = fibonacciWithMemoization(pos - 1) + fibonacciWithMemoization(pos - 2)
+        fibonacciResult[pos] = result
+        return result
+    }
+
+    fun gridTraveler(row: Int, column: Int): Long {
+        if (row == 1 && column == 1) return 1
+        if (row == 0 || column == 0) return 0
+        return gridTraveler(row - 1, column) + gridTraveler(row, column - 1)
+    }
+
+    var gridTravelerMap = hashMapOf<String, Long>()
+    fun gridTravelerWithMemoization(row: Int, column: Int): Long {
+        val key = "$row,$column"
+        val secondaryKey = "$column,$row"
+
+        if (gridTravelerMap.containsKey(key)) {
+            return gridTravelerMap[key]!!
+        }
+
+        if (gridTravelerMap.containsKey(secondaryKey)) {
+            return gridTravelerMap[secondaryKey]!!
+        }
+
+        if (row == 1 && column == 1) return 1
+        if (row == 0 || column == 0) return 0
+
+        val downTravels = gridTravelerWithMemoization(row - 1, column)
+        val rightTravels = gridTravelerWithMemoization(row, column - 1)
+
+        gridTravelerMap[key] = downTravels + rightTravels
+
+        println("$key - ${gridTravelerMap[key]}")
+
+        return gridTravelerMap[key]!!
+    }
+
+    fun canSum(target: Int, list: List<Int>): Boolean {
+        if (target == 0) return true
+        if (target < 0) return false
+
+        list.forEach { num ->
+            val remainder = target - num
+            if (canSum(remainder, list)) {
+                return true
+            }
+        }
+        return false
+    }
+
+    fun canSumMemoized(target: Int, list: List<Int>, memoizedResult: HashMap<Int, Boolean>): Boolean {
+        if (target == 0) return true
+        if (target < 0) return false
+
+        list.forEach { num ->
+            val remainder = target - num
+            if (memoizedResult.containsKey(remainder)) {
+                return memoizedResult[remainder]!!
+            } else {
+                if (canSumMemoized(remainder, list, memoizedResult)) {
+                    memoizedResult[remainder] = true
+                    return true
+                }
+            }
+        }
+        memoizedResult[target] = false
+        return false
+    }
+
+    fun howSum(target: Int, list: List<Int>): List<Int>?  {
+        if (target == 0) return emptyList()
+        if (target < 0) return null
+
+        list.forEach { num ->
+            val remainder = target - num
+            val remainderResult = howSum(remainder, list)
+            if (remainderResult != null) {
+                return remainderResult + num
+            }
+        }
+        return null
+    }
+
+    fun howSumMemoized(target: Int, list: List<Int>, memo: HashMap<Int, List<Int>?> = hashMapOf()): List<Int>?  {
+        if (memo.containsKey(target)) return memo[target]
+        if (target == 0) return emptyList()
+        if (target < 0) return null
+
+        list.forEach { num ->
+            val remainder = target - num
+            val remainderResult = howSumMemoized(remainder, list, memo)
+            if (remainderResult != null) {
+                memo[target] = remainderResult + num
+                return memo[target]!!
+            }
+        }
+        memo[target] = null
+        return null
+    }
+
+    fun bestSum(target: Int, list: List<Int>): List<Int>? {
+        if (target == 0) return emptyList()
+        if (target < 0) return null
+
+        var shortestCombination: List<Int>? = null
+
+        list.forEach { num ->
+            val remainder = target - num
+            val result = bestSum(remainder, list)
+            if (result != null) {
+                val combination = result + num
+                if (shortestCombination == null || combination.size < shortestCombination!!.size) {
+                    shortestCombination = combination
+                }
+            }
+        }
+
+        return shortestCombination
+    }
+
+    fun bestSumMemoized(target: Int, list: List<Int>, memo: HashMap<Int, List<Int>?> = hashMapOf()): List<Int>? {
+        if (memo.containsKey(target)) return memo[target]
+        if (target == 0) return emptyList()
+        if (target < 0) return null
+
+        var shortestCombination: List<Int>? = null
+
+        list.forEach { num ->
+            val remainder = target - num
+            val result = bestSumMemoized(remainder, list, memo)
+            if (result != null) {
+                val combination = result + num
+                memo[target] = combination
+                if (shortestCombination == null || combination.size < shortestCombination!!.size) {
+                    shortestCombination = combination
+                }
+            }
+        }
+
+        memo[target] = shortestCombination
+        return shortestCombination
+    }
+
+    fun howManyReais(target: Float, list: List<Float>, memo: HashMap<Float, List<Float>?> = hashMapOf()): List<Float>? {
+        if (memo.containsKey(target)) return memo[target]
+        if (target == 0.0f) return emptyList()
+        if (target < 0.0f) return null
+        println(target)
+
+        var shortestCombination: List<Float>? = null
+
+        list.forEach { num ->
+            val remainder = target - num
+            val result = howManyReais(remainder, list, memo)
+            if (result != null) {
+                val combination = result + num
+                memo[target] = combination
+                if (shortestCombination == null || combination.size < shortestCombination!!.size) {
+                    shortestCombination = combination
+                }
+            }
+        }
+
+        memo[target] = shortestCombination
+        return shortestCombination
+    }
+
+    fun canConstruct(target: String, wordBank: List<String>): Boolean {
+        if (target == "") return true
+
+        for (word in wordBank) {
+            if (target.indexOf(word) == 0) {
+                val suffix = target.slice(word.length until target.length)
+                if (canConstruct(suffix, wordBank)) {
+                    return true
+                }
+            }
+        }
+
+        return false
+    }
+
+    fun canConstructMemo(target: String, wordBank: List<String>, memo: HashMap<String, Boolean> = hashMapOf()): Boolean {
+        if (memo.containsKey(target)) return memo[target]!!
+        if (target == "") return true
+
+        for (word in wordBank) {
+            if (target.indexOf(word) == 0) {
+                val suffix = target.slice(word.length until target.length)
+                if (canConstructMemo(suffix, wordBank, memo)) {
+                    memo[target] = true
+                    return true
+                }
+            }
+        }
+
+        memo[target] = false
+        return false
+    }
+
+    fun howCards(targetCards: List<Int>?, listOfCards: List<Int>): List<Int>? {
+        if (targetCards == null) return null
+        if (targetCards.isEmpty()) return emptyList()
+
+        for (i in listOfCards.indices) {
+            if (targetCards.first() == listOfCards[i]) {
+                val result = howCards(targetCards.slice(1 until targetCards.size), listOfCards)
+                if (result != null) {
+                    return result + i
+                }
+            }
+        }
+
+        return null
+    }
+
+    fun countConstruct(target: String, wordBank: List<String>): Int {
+        if (target == "") return 1
+
+        var totalWays = 0
+
+        wordBank.forEach { word ->
+            if (target.indexOf(word) == 0) {
+                val numWays = countConstruct(target.slice(word.length until target.length), wordBank)
+                totalWays += numWays
+            }
+        }
+
+        return totalWays
+    }
+
+    fun countConstructMemo(target: String, wordBank: List<String>, memo: HashMap<String, Int> = hashMapOf()): Int {
+        if (memo.containsKey(target)) return memo[target]!!
+        if (target == "") return 1
+
+        var totalWays = 0
+
+        wordBank.forEach { word ->
+            if (target.indexOf(word) == 0) {
+                val numWays = countConstructMemo(target.slice(word.length until target.length), wordBank, memo)
+                totalWays += numWays
+                memo[target] = numWays
+            }
+        }
+
+        memo[target] = totalWays
+        return totalWays
+    }
+
+    fun allConstruct(target: String, wordBank: List<String>): List<List<String>> {
+        if (target == "") return listOf(listOf())
+
+        val constructWays = mutableListOf<List<String>>()
+
+        wordBank.forEach { word ->
+            if (target.indexOf(word) == 0) {
+                val suffix = target.slice(word.length until target.length)
+                val suffixWays = allConstruct(suffix, wordBank)
+                val targetWays = suffixWays.map { way -> way.plus(word).sortedBy { it } }
+                constructWays.addAll(targetWays)
+            }
+        }
+
+        return constructWays
+    }
+
+    fun allConstructMemo(target: String, wordBank: List<String>, memo: HashMap<String, List<List<String>>> = hashMapOf()): List<List<String>> {
+        if (memo.containsKey(target)) return memo[target]!!
+        if (target == "") return listOf(listOf())
+
+        val constructWays = mutableListOf<List<String>>()
+
+        wordBank.forEach { word ->
+            if (target.indexOf(word) == 0) {
+                val suffix = target.slice(word.length until target.length)
+                val suffixWays = allConstructMemo(suffix, wordBank, memo)
+                val targetWays = suffixWays.map { way -> way.plus(word).sortedBy { it } }
+                constructWays.addAll(targetWays)
+                memo[target] = targetWays
+            }
+        }
+
+        memo[target] = constructWays
+        return constructWays
+    }
+
+}
 
 // With one pointer it doesn't work =(
 // b.a.b.a.d
