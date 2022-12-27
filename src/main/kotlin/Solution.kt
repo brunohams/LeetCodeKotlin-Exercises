@@ -416,7 +416,71 @@ class Solution {
         return constructWays
     }
 
+    fun fibonacciWithTabulation(n: Int): Long {
+        val table = LongArray(n + 1) { 0 }
+        table[1] = 1
+        // [0, 1, 0,0,0,0,0]
+        for (i in table.indices) {
+            if (table.indices.contains(i+1)) {
+                table[i+1] += table[i]
+            }
+            if (table.indices.contains(i+2)) {
+                table[i+2] += table[i]
+            }
+        }
+
+        return table[n]
+    }
+
+    fun gridTravelerWithTabulation(row: Int, column: Int): Long {
+        val map = Array(row + 1) { Array(column + 1) { 0L } }
+        map[1][1] = 1
+        for (rowIndex in 0 .. row) {
+            for (columnIndex in 0 .. column) {
+                // [0,0,0]
+                // [0,0,0]
+                // [0,0,0]
+                if (map.indices.contains(rowIndex+1)) {
+                    map[rowIndex+1][columnIndex] += map[rowIndex][columnIndex]
+                }
+                if (map[rowIndex].indices.contains(columnIndex+1)) {
+                    map[rowIndex][columnIndex+1] += map[rowIndex][columnIndex]
+                }
+            }
+        }
+        return map[row][column]
+    }
+
+    fun howSumTabulation(target: Int, nums: List<Int>): List<Int>? {
+        val table: Array<MutableList<Int>?> = Array(target + 1) { null }
+        table[0] = mutableListOf()
+
+        for (i in table.indices) {
+            if (table[i] == null) continue
+            nums.forEach { num ->
+                val setPosition = i+num
+                if (setPosition <= table.lastIndex) {
+                    if (table[setPosition] == null) {
+                        table[setPosition] = mutableListOf()
+                    }
+                    table[setPosition] = table[i]!!.plus(num).toMutableList()
+                }
+            }
+        }
+
+        return table[target]
+    }
+
 }
+
+// 5 -> [3,2,4]
+//    0     1       2      3      4      5
+//  (null) (null) (null) (null) (null) (null)
+//  ([]) (null) (null) (null) (null) (null)
+//  ([]) (null) ([2]) ([3]) ([4]) (null)
+//  ([]) (null) ([2]) ([3]) ([4]) (null)
+//  ([]) (null) ([2]) ([3]) ([4,2]) ([3])
+//  ([]) (null) ([2]) ([3]) ([4,2]) ([3,2])
 
 // With one pointer it doesn't work =(
 // b.a.b.a.d

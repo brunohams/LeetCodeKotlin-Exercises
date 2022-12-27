@@ -13,4 +13,10 @@ class FibonnaciTest {
         assertEquals(21, solution.fibonacciWithMemoization(8))
     }
 
+    @Test
+    fun test_tabulation() {
+        println(solution.fibonacciWithTabulation(500))
+        println(solution.fibonacciResult)
+        assertEquals(21, solution.fibonacciWithTabulation(8))
+    }
 }

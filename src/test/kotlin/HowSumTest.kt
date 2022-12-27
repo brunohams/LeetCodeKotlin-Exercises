@@ -9,7 +9,7 @@ class HowSumTest {
     private val solution = Solution()
 
     @Test
-    fun test_valid() {
+    fun test_memoization() {
         assertEquals(
             listOf(3,2,2),
             solution.howSumMemoized(7, listOf(2,3))
@@ -22,10 +22,6 @@ class HowSumTest {
             listOf(2,2,2,2),
             solution.howSumMemoized(8, listOf(2,3,5))
         )
-    }
-
-    @Test
-    fun test_invalid() {
         assertEquals(
             null,
             solution.howSumMemoized(7, listOf(2,4))
@@ -36,4 +32,27 @@ class HowSumTest {
         )
     }
 
+    @Test
+    fun test_tabulation() {
+        assertEquals(
+            listOf(3,2,2),
+            solution.howSumTabulation(7, listOf(2,3))
+        )
+        assertEquals(
+            listOf(4,3),
+            solution.howSumTabulation(7, listOf(5,3,4,7))
+        )
+        assertEquals(
+            listOf(2,2,2,2),
+            solution.howSumTabulation(8, listOf(2,3,5))
+        )
+        assertEquals(
+            null,
+            solution.howSumTabulation(7, listOf(2,4))
+        )
+        assertEquals(
+            null,
+            solution.howSumTabulation(300, listOf(7,14))
+        )
+    }
 }

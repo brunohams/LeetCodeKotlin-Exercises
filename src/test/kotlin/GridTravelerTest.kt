@@ -25,4 +25,13 @@ class GridTravelerTest {
         assertEquals(2333606220, solution.gridTravelerWithMemoization(18,18))
     }
 
+    @Test
+    fun test_ExampleWithTabulation() {
+        assertEquals(1, solution.gridTravelerWithTabulation(1,1))
+        assertEquals(3, solution.gridTravelerWithTabulation(2,3))
+        assertEquals(3, solution.gridTravelerWithTabulation(3,2))
+        assertEquals(6, solution.gridTravelerWithTabulation(3,3))
+        assertEquals(2333606220, solution.gridTravelerWithTabulation(18,18))
+    }
+
 }
