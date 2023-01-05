@@ -1,8 +1,7 @@
+import struct.ListNode
 import struct.TreeNode
-import java.lang.Exception
 import java.lang.IndexOutOfBoundsException
-import kotlin.math.ceil
-import kotlin.math.roundToInt
+import kotlin.math.max
 
 class Solution {
     fun isPalindrome(x: Int): Boolean {
@@ -471,117 +470,207 @@ class Solution {
         return table[target]
     }
 
+    fun bestSumTabulation(target: Int, numbers: List<Int>): List<Int>? {
+        val table = Array<MutableList<Int>?>(target + 1) { null }
+        table[0] = mutableListOf()
+
+        for (tableIndex in table.indices) {
+            if (table[tableIndex] == null) continue
+            for (number in numbers) {
+                if ((tableIndex + number) <= table.lastIndex) {
+
+                    if (table[tableIndex + number] == null) {
+                        table[tableIndex + number] = mutableListOf()
+                    }
+
+                    val combination = table[tableIndex]?.plus(number)!!
+                    val existentList = table[tableIndex + number]!!
+
+                    if (combination.size <= existentList.size || existentList.isEmpty()) {
+                        table[tableIndex + number] = combination.toMutableList()
+                    }
+                }
+            }
+        }
+
+        return table[target]?.toList()
+    }
+
+    fun canConstructTabulation(target: String, wordBank: List<String>): Boolean {
+        val table = Array<Boolean>(target.length + 1) { false }
+        table[0] = true
+
+        for (i in target.indices) {
+            if (!table[i]) continue
+            for (word in wordBank) {
+                if (i + word.length <= target.length) {
+                    val slicedTarget = target.slice(i until i + word.length)
+                    if (slicedTarget == word) {
+                        table[i + word.length] = true
+                    }
+                }
+            }
+        }
+
+        return table[target.length]
+    }
+
+    fun countConstructTabulation(target: String, wordBank: List<String>): Int {
+        val table = Array<Int>(target.length + 1) { 0 }
+        table[0] = 1
+
+        for (i in target.indices) {
+            if (table[i] == 0) continue
+            for (word in wordBank) {
+                if (i + word.length <= target.length) {
+                    val slicedTarget = target.slice(i until i + word.length)
+                    if (slicedTarget == word) {
+                        table[i + word.length] += table[i]
+                    }
+                }
+            }
+        }
+
+        return table[target.length]
+    }
+
+    fun allConstructTabulation(target: String, wordBank: List<String>): List<List<String>?> {
+        val table = Array<List<List<String>?>>(target.length + 1) { listOf(null) }
+        table[0] = listOf(listOf())
+
+        for (i in target.indices) {
+            if (table[i].first() == null) continue
+            for (word in wordBank) {
+                if (i + word.length <= target.length) {
+                    val slicedTarget = target.slice(i until i + word.length)
+                    if (slicedTarget == word) {
+                        val newCombinations = table[i].map { subArray ->
+                            subArray?.plus(word)
+                        }
+                        table[i + word.length] = table[i + word.length]
+                            .plus(newCombinations)
+                            .mapNotNull { it }
+                    }
+                }
+            }
+
+        }
+
+        return table[target.length]
+    }
+
+
+    var resultPalindrome = ""
+    fun longestPalindrome2(target: String): String {
+        for (i in target.indices) {
+            // Check for odd
+            expandThroughString(target, i, i + 1)
+            // Check for even
+            expandThroughString(target, i, i)
+        }
+        return resultPalindrome
+    }
+
+    fun expandThroughString(string: String, _r: Int, _l: Int) {
+        var leftPosition = _l
+        var rightPosition = _r
+        while (
+            string.getOrNull(rightPosition) != null && string.getOrNull(leftPosition) != null
+            &&
+            string.getOrNull(rightPosition) == string.getOrNull(leftPosition)
+        ) {
+            val newPalindrome = string.slice(leftPosition .. rightPosition)
+            if (newPalindrome.length >= resultPalindrome.length) {
+                resultPalindrome = newPalindrome
+            }
+            leftPosition--
+            rightPosition++
+        }
+    }
+
+    fun addTwoNumbers(l1: ListNode?, l2: ListNode?): ListNode? {
+        if (l1 == null && l2 == null) return null
+
+        val firstValue = l1?.`val` ?: 0
+        val secondValue = l2?.`val` ?: 0
+        var sumValue = firstValue + secondValue
+
+        if (sumValue > 9) {
+            l1?.next?.`val`?.let {
+                l1.next?.`val` = it + 1
+            } ?: kotlin.run {
+                l1?.next = ListNode(1)
+            }
+            sumValue %= 10
+        }
+
+        return ListNode(sumValue).apply {
+            next = addTwoNumbers(l1?.next, l2?.next)
+        }
+    }
+
+    fun lengthOfLongestSubstring(s: String): Int {
+        val charSet = mutableSetOf<Char>()
+        var longestLength = 0
+
+        var left = 0
+        var right = 0
+
+        while (right < s.length) {
+
+            // While the char got repeated, shift left
+            while (charSet.contains(s[right])) {
+                // Decrement left char by 1
+                charSet.remove(s[left])
+                left++
+            }
+
+            // Increment right char by 1
+            charSet.add(s[right])
+
+            // Set the max of longestLength
+            // Or the right - left +1 (if no ever repeated)
+            longestLength = Math.max(longestLength, right - left+1)
+
+            right++
+        }
+
+        return longestLength
+    }
+
+    fun isStringInOrderWithGivenParam(order: String, s: String): Boolean {
+        var position = 0
+
+        for (char in s) {
+
+            val indexOfChar = order.indexOf(char)
+
+            // If in invalid position
+            if (indexOfChar > position) {
+                return false
+            }
+
+            // Invalid character - Continue...
+            if (indexOfChar == -1) {
+                continue
+            }
+
+            position++
+
+        }
+
+        return true
+    }
+
 }
 
-// 5 -> [3,2,4]
-//    0     1       2      3      4      5
-//  (null) (null) (null) (null) (null) (null)
-//  ([]) (null) (null) (null) (null) (null)
-//  ([]) (null) ([2]) ([3]) ([4]) (null)
-//  ([]) (null) ([2]) ([3]) ([4]) (null)
-//  ([]) (null) ([2]) ([3]) ([4,2]) ([3])
-//  ([]) (null) ([2]) ([3]) ([4,2]) ([3,2])
-
-// With one pointer it doesn't work =(
-// b.a.b.a.d
-// ^
-// b.a.b.a.d -> bab
-//   ^
-// b.a.b.a.d -> aba
-//     ^
-// b.a.b.a.d
-//       ˆ
-
-// c.b.b.d
-// ^
-// c.b.b.d
-//   ^
-// c.b.b.d
-//     ^
-
-// o.v.v.o
-// ^
-// o.v.v.o
-//   ˆ
-// o.v.v.o
-//     ˆ
-
-// two pointers (left -> right -> both)
-// b.a.b.a.d -> b
-// ˆ2
-// b.a.b.a.d
-// ^ ^ *
-// b.a.b.a.d -> bab & aba
-// * ^ ^ *
-// b.a.b.a.d
-//     ^ ^
-
-// o.v.v.o
-// ^ ^
-// o.v.v.o
-//   ^ ^
+// dvdf
+// d
+// dv
+// dvd
 
 
-
-
-// PAR
-// o.v.v.o -> o
-// ^ ^
-// o.v.v.o -> o.v.v.o
-//   ^ ^
-//   ^ ^
-// ^     ^
-
-// a.a.e.e.v.o.o.v.e.a
-// ^ ^
-// ^ ^ -> aa
-// a.a.e.e.v.o.o.v.e.a
-//   ^ ^
-// a.a.e.e.v.o.o.v.e.a
-//     ^ ^
-//     ^ ^ -> ee
-// a.a.e.e.v.o.o.v.e.a
-//       ^ ^
-// a.a.e.e.v.o.o.v.e.a
-//         ^ ^
-// a.a.e.e.v.o.o.v.e.a
-//           ^ ^
-//           ^ ^ -> oo
-//         ^     ^ -> voov
-//       ^         ^ -> evoove
-
-
-// a.a.e.e.v.o.o.v.e.a
-//
-
-
-
-
-
-
-// IMPAR? GREAT SUCCESS
-// o.v.v.v.v.v.o -> o
-// ^
-// o.v.v.v.v.v.o
-//   ^
-// o.v.v.v.v.v.o -> v.v.v
-//     ^
-//   ^   ^
-// o.v.v.v.v.v.o -> o.v.v.v.v.v.o
-//       ^
-//     ^   ^
-//   ^       ^
-// ^           ^
-
-// a.b.b.b.c.d.a -> a
-// ^
-// a.b.b.b.c.d.a
-//   ^
-// a.b.b.b.c.d.a -> bbb
-//     ^
-//   ^   ^
-// a.b.b.b.c.d.a
-//       ^
-// a.b.b.b.c.d.a
-//         ^
-
+// abcdefghai1234567890
+// abcdefgh
+// a
+// bcdefghai1234567890

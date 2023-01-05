@@ -9,7 +9,7 @@ class CanConstructTest {
     private val solution = Solution()
 
     @Test
-    fun test_valid() {
+    fun test_memoization() {
         assertEquals(
             true,
             solution.canConstructMemo("abcdef", listOf("ab", "abc", "cd", "def", "abcd"))
@@ -18,10 +18,6 @@ class CanConstructTest {
             true,
             solution.canConstructMemo("enterapotentpot", listOf("a", "p", "ent", "enter", "ot", "o", "t"))
         )
-    }
-
-    @Test
-    fun test_invalid() {
         assertEquals(
             false,
             solution.canConstructMemo("skateboard", listOf("bo", "rd", "ate", "t", "ska", "sk", "boar"))
@@ -29,6 +25,26 @@ class CanConstructTest {
         assertEquals(
             false,
             solution.canConstructMemo("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef", listOf("e", "ee", "eee", "eeee", "eeeee", "eeeeee"))
+        )
+    }
+
+    @Test
+    fun test_tabulation() {
+        assertEquals(
+            true,
+            solution.canConstructTabulation("abcdef", listOf("ab", "abc", "cd", "def", "abcd"))
+        )
+        assertEquals(
+            true,
+            solution.canConstructTabulation("enterapotentpot", listOf("a", "p", "ent", "enter", "ot", "o", "t"))
+        )
+        assertEquals(
+            false,
+            solution.canConstructTabulation("skateboard", listOf("bo", "rd", "ate", "t", "ska", "sk", "boar"))
+        )
+        assertEquals(
+            false,
+            solution.canConstructTabulation("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeef", listOf("e", "ee", "eee", "eeee", "eeeee", "eeeeee"))
         )
     }
 

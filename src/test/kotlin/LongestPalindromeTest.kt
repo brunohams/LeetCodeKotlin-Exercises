@@ -35,6 +35,14 @@ class LongestPalindromeTest {
         assertEquals("bb", solution.longestPalindrome("bb"))
     }
 
+
+    @Test
+    fun testa() {
+        println(solution.longestPalindrome2("adam"))
+        println(solution.longestPalindrome2("adama"))
+        println(solution.longestPalindrome2("aaabaaaa"))
+    }
+
 }
 
 // babad -> bab or aba
